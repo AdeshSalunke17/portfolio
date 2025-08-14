@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import './App.css'
 import { store } from './config/firebaseConfig';
 import { getDocs, collection } from 'firebase/firestore';
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { saveUserData } from './features/user/userSlice'; 
 import { saveUserProjects } from './features/userProjects/userProjectsSlice';
 import Header from './components/header/Header';
@@ -31,6 +31,9 @@ import Navbar from './components/NavBar';
 import { useResponsivePosition, useResponsiveScale } from './utility/responsiveHooks';
 import BackGroundMusic from './components/BackGroundMusic';
 import TextType from './blocks/TextAnimations/TextType/TextType';
+import FuzzyText from './blocks/TextAnimations/FuzzyText/FuzzyText'
+import ShinyText  from './blocks/TextAnimations/ShinyText/ShinyText'
+import { FlyingAstro } from './components/FlyingAstro';
 const images = [
   "https://images.unsplash.com/photo-1618401479427-c8ef9465fbe1?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8Z2l0aHVifGVufDB8fDB8fHww",
   "https://images.unsplash.com/photo-1692699203597-b5a4464f3f9c?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8cHJvamVjdHN8ZW58MHx8MHx8fDA%3D",
@@ -48,12 +51,14 @@ const transformStyles = [
 
 const annotations = [
   { position: [0,2,6], lookAt: [0, 0, 0] },
-  { position: [-0.28560641655995583, 0.5017295994292731, 1.010602696116327], lookAt: [2, 2, 2] },
+  { position: [-0.2588814370121715, -1.1296287158439686, 0.10742807562495656], lookAt: [0, 0, 0] },
+  { position: [-0.28560641655995583, 0.5017295994292731, 1.010602696116327], lookAt: [0, 0, 0] },
   { position: [-2.7278058091356105, -5.392371360017939, 1.8658527764280648], lookAt: [0, 0, 0] },
   { position: [-0.8764948499767572, -1.533313073500974, 0.5394547339374824], lookAt: [0, 0, 0] }
 ];
 function App() {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
+  const user = useSelector(state => state.user.userData);
 const [index, setIndex] = useState(0);
   const fetchUserData = async () => {
     const userQuerySnapshot = await getDocs(collection(store, 'userInfo'));
@@ -63,7 +68,10 @@ const [index, setIndex] = useState(0);
     dispatch(saveUserData(userData));
     dispatch(saveUserProjects(userProjects));
   };
-  
+  // useEffect(() => {
+  //   console.log('user', user);
+    
+  // }, [user])
   useEffect(() => {
     fetchUserData();
   },[]);
@@ -91,7 +99,9 @@ const adeshSpring = useSpring({
   });
 
   const spaceStationScale = useResponsiveScale(0.2, 0.5);
-  const spaceStationPosition = useResponsivePosition([0, -0.01, 0],[0, -0.75, 0])
+  const spaceStationPosition = useResponsivePosition([0, -0.01, 0],[0, -0.75, 0]);
+  const flyingAstroPosition = useResponsivePosition([1, -3, 0],[-3, 1.5, 0]);
+  const spaceshipRef = useRef()
 
   return (
     <section className='w-full h-screen flex flex-col justify-center items-center'>
@@ -115,7 +125,7 @@ const adeshSpring = useSpring({
           fade           // fade on camera move
           speed={2}      // twinkling speed
         />
-              {/* <CameraLogger/> */}
+              <CameraLogger/>
               <CameraController targetIndex={index} annotations={annotations} />
         <Suspense fallback={null}>
           <Environment
@@ -123,12 +133,13 @@ const adeshSpring = useSpring({
             background={false}
             preset='sunset'
           />
-          <group position={spaceStationPosition}>
+          <group position={spaceStationPosition} ref={spaceshipRef}>
             <SpaceStation scale={spaceStationScale}
              rotation={[0.7, -2*Math.PI * 0.25, 0]} 
              />
             <ContactShadows position={[0, -0.76, 0]} opacity={0.5} blur={2} far={5} />
           </group>
+             <FlyingAstro position={flyingAstroPosition} scale={0.006}  spaceshipRef={spaceshipRef}/>
           {/* camera controls */}
           <OrbitControls makeDefault enableDamping />
         </Suspense>
@@ -143,6 +154,13 @@ const adeshSpring = useSpring({
         cursorCharacter="_"
         className='absolute text-4xl font-bold top-44 left-8 max-w-96'
       /> */}
+      {
+        index === 0 && <CustomRotatingText/>
+      }
+      {
+        index === 1 && <div className='absolute right-0'><ShinyText text={user.userDesc} 
+        className=' font-bold sm:max-w-[50rem] max-w-[20rem] sm:text-3xl text-sm leading-8 sm:leading-normal'/></div>
+      }
     </section>
   )
 }
