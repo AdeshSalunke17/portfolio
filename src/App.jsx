@@ -7,18 +7,10 @@ import { saveUserData } from './features/user/userSlice';
 import { saveUserProjects } from './features/userProjects/userProjectsSlice';
 import Header from './components/header/Header';
 import Home from './components/home/Home';
-import Hyperspeed from './blocks/Backgrounds/Hyperspeed/Hyperspeed';
-import { hyperspeedPresets } from './blocks/Backgrounds/Hyperspeed/HyperSpeedPresets';
-import Name from './components/name/Name';
-import SplashCursor from './blocks/Animations/SplashCursor/SplashCursor';
-import About from './components/about/About';
 import BounceCards from './blocks/Components/BounceCards/BounceCards'
 import RollingGallery from './blocks/Components/RollingGallery/RollingGallery'
 import RotatingText from './blocks/TextAnimations/RotatingText/RotatingText';
 import CustomRotatingText from './components/customerotatingtext/CustomRotatingText';
-import ScrollVelocity from './blocks/TextAnimations/ScrollVelocity/ScrollVelocity';
-import Lanyard from './blocks/Components/Lanyard/Lanyard';
-import { Parallax, ParallaxLayer } from '@react-spring/parallax';
 import { useScroll, useSpring,animated } from '@react-spring/web';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Environment, ContactShadows, Loader, Html } from '@react-three/drei'
@@ -30,24 +22,9 @@ import { CameraController } from './components/CameraController';
 import Navbar from './components/NavBar';
 import { useResponsivePosition, useResponsiveScale } from './utility/responsiveHooks';
 import BackGroundMusic from './components/BackGroundMusic';
-import TextType from './blocks/TextAnimations/TextType/TextType';
-import FuzzyText from './blocks/TextAnimations/FuzzyText/FuzzyText'
 import ShinyText  from './blocks/TextAnimations/ShinyText/ShinyText'
 import { FlyingAstro } from './components/FlyingAstro';
-const images = [
-  "https://images.unsplash.com/photo-1618401479427-c8ef9465fbe1?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8Z2l0aHVifGVufDB8fDB8fHww",
-  "https://images.unsplash.com/photo-1692699203597-b5a4464f3f9c?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8cHJvamVjdHN8ZW58MHx8MHx8fDA%3D",
-  "https://images.unsplash.com/photo-1511367461989-f85a21fda167?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cHJvZmlsZSUyMGxvZ298ZW58MHx8MHx8fDA%3D",
-  "https://images.unsplash.com/photo-1611944212129-29977ae1398c?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8bGlua2VkaW58ZW58MHx8MHx8fDA%3D",
-  // "https://picsum.photos/300/300?grayscale"
-];
-const transformStyles = [
-  "rotate(5deg) translate(-150px)",
-  "rotate(0deg) translate(-70px)",
-  "rotate(-5deg)",
-  "rotate(5deg) translate(70px)",
-  "rotate(-5deg) translate(150px)"
-];
+import { AnimatePresence, motion } from 'framer-motion';
 
 const annotations = [
   { position: [0,2,6], lookAt: [0, 0, 0] },
@@ -56,10 +33,11 @@ const annotations = [
   { position: [-2.7278058091356105, -5.392371360017939, 1.8658527764280648], lookAt: [0, 0, 0] },
   { position: [-0.8764948499767572, -1.533313073500974, 0.5394547339374824], lookAt: [0, 0, 0] }
 ];
+
 function App() {
   const dispatch = useDispatch();
   const user = useSelector(state => state.user.userData);
-const [index, setIndex] = useState(0);
+  const [index, setIndex] = useState(0);
   const fetchUserData = async () => {
     const userQuerySnapshot = await getDocs(collection(store, 'userInfo'));
     const userData = userQuerySnapshot.docs[0]?.data();
@@ -101,7 +79,7 @@ const adeshSpring = useSpring({
   const spaceStationScale = useResponsiveScale(0.2, 0.5);
   const spaceStationPosition = useResponsivePosition([0, -0.01, 0],[0, -0.75, 0]);
   const flyingAstroPosition = useResponsivePosition([1, -3, 0],[-3, 1.5, 0]);
-  const spaceshipRef = useRef()
+  const spaceshipRef = useRef();
 
   return (
     <section className='w-full h-screen flex flex-col justify-center items-center'>
@@ -157,10 +135,23 @@ const adeshSpring = useSpring({
       {
         index === 0 && <CustomRotatingText/>
       }
-      {
-        index === 1 && <div className='absolute right-0'><ShinyText text={user.userDesc} 
-        className=' font-bold sm:max-w-[50rem] max-w-[20rem] sm:text-3xl text-sm leading-8 sm:leading-normal'/></div>
-      }
+      <AnimatePresence mode="wait">
+        {index === 1 && (
+          <motion.div
+            key="shiny-text"
+            className="absolute right-0"
+            initial={{ opacity: 0, x: 50 }}          // starting state (hidden, moved right)
+            animate={{ opacity: 1, x: 0 }}           // visible state
+            exit={{ opacity: 0, x: -50 }}            // exit state (fade + move left)
+            transition={{ duration: 0.8, ease: "easeInOut" }} // smooth animation
+          >
+            <ShinyText
+              text={user.userDesc}
+              className="font-bold sm:max-w-[50rem] max-w-[20rem] sm:text-3xl text-sm leading-8 sm:leading-normal"
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   )
 }
