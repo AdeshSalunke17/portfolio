@@ -25,8 +25,6 @@ import BackGroundMusic from './components/BackGroundMusic';
 import ShinyText  from './blocks/TextAnimations/ShinyText/ShinyText'
 import { FlyingAstro } from './components/FlyingAstro';
 import { AnimatePresence, motion } from 'framer-motion';
-import FlyingPosters from './blocks/Components/FlyingPosters/FlyingPosters'
-import ScrollStack, { ScrollStackItem } from './blocks/Components/ScrollStack/ScrollStack'
 import MagicBento from './blocks/Components/MagicBento/MagicBento'
 import { BabyAstro } from './components/BabyAstro';
 
