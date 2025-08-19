@@ -1,7 +1,7 @@
-const navList = ['Home', 'About', 'Projects', 'Technologies']
+const navList = ['Home', 'About', 'Projects', 'Contact']
 export default function Navbar({targetIndex, setTargetIndex}) {
   return (
-<nav className="bg-transparent absolute top-0 z-10 w-100">
+<nav className="bg-transparent absolute top-0 z-50 w-100">
   <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
     
     <div className="w-full block md:w-auto" id="navbar-default">
