@@ -1,14 +1,18 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 
 export function useResponsiveScale(smallScale, defaultScale) {
   const [scale, setScale] = useState(defaultScale);
 
+  // Memoize the input values to avoid triggering useEffect on each render
+  const smallScaleMemo = useMemo(() => smallScale, [smallScale]);
+  const defaultScaleMemo = useMemo(() => defaultScale, [defaultScale]);
+
   useEffect(() => {
     const updateScale = () => {
       if (window.innerWidth <= 768) {
-        setScale(smallScale);
+        setScale(smallScaleMemo);
       } else {
-        setScale(defaultScale);
+        setScale(defaultScaleMemo);
       }
     };
 
@@ -18,7 +22,7 @@ export function useResponsiveScale(smallScale, defaultScale) {
     return () => {
       window.removeEventListener("resize", updateScale);
     };
-  }, [smallScale, defaultScale]);
+  }, [smallScaleMemo, defaultScaleMemo]);
 
   return scale;
 }
@@ -26,22 +30,22 @@ export function useResponsiveScale(smallScale, defaultScale) {
 export function useResponsivePosition(smallPosition, defaultPosition) {
   const [position, setPosition] = useState(defaultPosition);
 
+  const smallPosMemo = useMemo(() => smallPosition, [JSON.stringify(smallPosition)]);
+  const defaultPosMemo = useMemo(() => defaultPosition, [JSON.stringify(defaultPosition)]);
+
   useEffect(() => {
     const updatePosition = () => {
       if (window.innerWidth <= 768) {
-        setPosition(smallPosition);
+        setPosition(smallPosMemo);
       } else {
-        setPosition(defaultPosition);
+        setPosition(defaultPosMemo);
       }
     };
 
-    updatePosition(); // run on mount
+    updatePosition();
     window.addEventListener("resize", updatePosition);
-
-    return () => {
-      window.removeEventListener("resize", updatePosition);
-    };
-  }, [smallPosition, defaultPosition]);
+    return () => window.removeEventListener("resize", updatePosition);
+  }, [smallPosMemo, defaultPosMemo]);
 
   return position;
 }
