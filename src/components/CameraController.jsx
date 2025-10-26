@@ -16,8 +16,6 @@ export function CameraController() {
   const {pathname} = useLocation();
   useEffect(() => {
     // if (pathname === '/') return;
-    console.log(pathname);
-    
     const { position, lookAt } = annotations.find(ref => ref.pathname === pathname);
     const targetPos = new THREE.Vector3(...position);
     const lookAtPos = new THREE.Vector3(...lookAt);

@@ -1,14 +1,71 @@
 import { Canvas } from '@react-three/fiber'
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { BabyAstro } from '../BabyAstro'
 import { OrbitControls } from '@react-three/drei';
 import { AnimatePresence, motion } from 'framer-motion';
+import { store } from '../../config/firebaseConfig'
+import { addDoc, collection } from 'firebase/firestore';
+  import { Bounce, ToastContainer, toast } from 'react-toastify';
 
 const Contact = () => {
       const [animateBabyAstro, setAnimateBabyAstro] = useState(false);
+      const userName = useRef();
+      const userEmail = useRef();
+      const userPhone = useRef();
+      const userAddress = useRef();
+      const userMessage = useRef();
+
+      const handleSubmit =async e => {
+        e.preventDefault();
+        try {
+          const docRef = await addDoc(collection(store, "contacted_users"), {
+            name : userName.current.value,
+            email : userEmail.current.value,
+            message : userMessage.current.value,
+            phone : userPhone.current.value,
+            address : userAddress.current.value
+          });
+          if(docRef.id) {
+            toast.success('data saved!', {
+              position: "top-left",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: false,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "dark",
+              transition: Bounce,
+              });
+              userName.current.value = '';
+              userEmail.current.value = '';
+              userMessage.current.value = '';
+              userPhone.current.value = '';
+              userAddress.current.value = '';
+          } else {
+            throw new Error();
+          }
+        } catch (error) {
+          toast.error('Unable to save data!', {
+            position: "top-left",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: false,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+            transition: Bounce,
+            });
+            console.log('error occured while storing data', error);
+            
+        }
+      }
+
   return (
     <div className="w-full h-full fixed inset-0 flex md:flex-row flex-col items-center justify-center z-40 bg-black/0 backdrop-blur-xs overflow-auto"
       >
+        <ToastContainer />
         <div className='md:basis-1/2 basis-1 w-full h-full flex justify-center items-center'
         >
             <Canvas
@@ -46,7 +103,7 @@ const Contact = () => {
               <form action="" className='flex flex-row flex-wrap'
               onFocus={() => setAnimateBabyAstro(true)}
               onBlur={() => setAnimateBabyAstro(false)}
-              onSubmit={e => e.preventDefault()}
+              onSubmit={handleSubmit}
               >
                 <div className="md:basis-1/2 basis-full md:pr-2">
                   <div className="mt-2">
@@ -57,6 +114,7 @@ const Contact = () => {
                         type="text"
                         placeholder="Your Name"
                         className="block min-w-0 grow  py-1.5 pr-3 pl-1 text-base text-gray-500 placeholder:text-white focus:outline-none sm:text-sm/6"
+                        ref={userName}
                       />
                     </div>
                   </div>
@@ -70,6 +128,7 @@ const Contact = () => {
                         type="email"
                         placeholder="Your Email"
                         className="block min-w-0 grow  py-1.5 pr-3 pl-1 text-base text-gray-500 placeholder:text-white focus:outline-none sm:text-sm/6"
+                        ref={userEmail}
                       />
                     </div>
                   </div>
@@ -83,6 +142,7 @@ const Contact = () => {
                         type="text"
                         placeholder="Your Phone"
                         className="block min-w-0 grow  py-1.5 pr-3 pl-1 text-base text-gray-500 placeholder:text-white focus:outline-none sm:text-sm/6"
+                        ref={userPhone}
                       />
                     </div>
                   </div>
@@ -96,6 +156,7 @@ const Contact = () => {
                         type="text"
                         placeholder="Address"
                         className="block min-w-0 grow  py-1.5 pr-3 pl-1 text-base text-gray-500 placeholder:text-white focus:outline-none sm:text-sm/6"
+                        ref={userAddress}
                       />
                     </div>
                   </div>
@@ -109,6 +170,7 @@ const Contact = () => {
                         name='message'
                         placeholder='Your Message...'
                         rows={10}
+                        ref={userMessage}
                       />
                     </div>
                   </div>

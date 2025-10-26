@@ -109,6 +109,7 @@ const ParticleCard = ({
   enableTilt = true,
   clickEffect = false,  
   enableMagnetism = false,
+  deployedLink = ''
 }) => {
   const cardRef = useRef(null);
   const particlesRef = useRef([]);
@@ -342,13 +343,17 @@ const ParticleCard = ({
   ]);
 
   return (
-    <div
+    <a
       ref={cardRef}
       className={`${className} relative overflow-hidden`}
       style={{ ...style, position: "relative", overflow: "hidden" }}
+      onClick={() => console.log('clicked')
+      }
+      href={deployedLink}
+      target="_blank"
     >
       {children}
-    </div>
+    </a>
   );
 };
 
@@ -741,6 +746,7 @@ const MagicBento = ({
                   enableTilt={enableTilt}
                   clickEffect={clickEffect}
                   enableMagnetism={enableMagnetism}
+                  deployedLink={card.deployedLink}
                 >
                   <div className="card__header flex justify-between gap-3 relative text-white">
                     <span className="card__label text-base">{card.title}</span>
