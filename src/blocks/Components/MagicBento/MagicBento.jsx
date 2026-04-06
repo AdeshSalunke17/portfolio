@@ -53,7 +53,8 @@ const MOBILE_BREAKPOINT = 768;
 const images = [
   'wego.png',
   'cryptocoin.png',
-  '/fileconverter.png'
+  '/fileconverter.png',
+  'chit-chat.png'
 ];
 const createParticleElement = (
   x,
