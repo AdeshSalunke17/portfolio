@@ -12,7 +12,9 @@ import * as THREE from 'three'
 
 export function BabyAstro({ animate, ...props }) {
   const group = useRef()
-  const { nodes, materials, animations } = useGLTF('/models/baby_astro.glb')
+  const { nodes, materials, animations } = useGLTF(
+    "/models/baby_astro_compressed_basetoolbox.glb",
+  );
   const { actions, names, mixer } = useAnimations(animations, group)
 
     useEffect(() => {
@@ -153,4 +155,4 @@ export function BabyAstro({ animate, ...props }) {
   )
 }
 
-useGLTF.preload('/models/baby_astro.glb')
+useGLTF.preload("/models/baby_astro_compressed_basetoolbox.glb");

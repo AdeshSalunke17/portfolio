@@ -32,7 +32,9 @@ import { useGLTF, useAnimations } from '@react-three/drei'
 
 export const SpaceStation = (props) => {
   const group = useRef();
-  const { nodes, materials, animations } = useGLTF('/models/space_station_3.glb')
+  const { nodes, materials, animations } = useGLTF(
+    "/models/space_station_3_compressed_basetoolbox.glb",
+  );
   const { actions } = useAnimations(animations, group);
   useEffect(() => {
     if (actions && actions.Animation) {
@@ -149,4 +151,4 @@ export const SpaceStation = (props) => {
   )
 }
 
-useGLTF.preload('/models/space_station_3.glb')
+useGLTF.preload("/models/space_station_3_compressed_basetoolbox.glb");
