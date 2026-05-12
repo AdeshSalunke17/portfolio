@@ -54,7 +54,9 @@ const images = [
   'wego.png',
   'cryptocoin.png',
   '/fileconverter.png',
-  'chit-chat.png'
+  'chit-chat.png',
+  'chat-bot.png',
+  'ocr.png'
 ];
 const createParticleElement = (
   x,
